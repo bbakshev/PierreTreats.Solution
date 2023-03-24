@@ -1,0 +1,31 @@
+@{
+  Layout = "_Layout";
+}
+
+@model PierreTreats.Models.Treat
+
+<h4>Add a new treat</h4>
+
+@using (Html.BeginForm())
+{
+  <p>@Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger", @style = "font-weight: 600;" })</p>
+  @Html.LabelFor(model => model.Name)
+  @Html.TextBoxFor(model => model.Name)
+
+  <p>@Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger", @style = "font-weight: 600;" })</p>
+  @Html.LabelFor(model => model.Description)
+  @Html.TextAreaFor(model => model.Description)
+
+  <br><br>
+  @Html.LabelFor(model => model.Rating)<br>
+  <input type="radio" id="rating" name="Rating" value="1" checked>
+  <label for="rating">⭐</label><br>
+
+  <label>@Html.RadioButtonFor(model => model.Rating,2) ⭐⭐</label><br>
+  <label>@Html.RadioButtonFor(model => model.Rating,3) ⭐⭐⭐</label><br>
+  <label>@Html.RadioButtonFor(model => model.Rating,4) ⭐⭐⭐⭐</label><br>
+  <label>@Html.RadioButtonFor(model => model.Rating,5) ⭐⭐⭐⭐⭐ </label><br>
+  <br>
+  <input type="submit" value="Add new treat"/>
+}
+  <span>@Html.ActionLink(".Show all treats", "Index")</span>

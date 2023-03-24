@@ -1,0 +1,27 @@
+@{
+  Layout = "_Layout";
+}
+
+@using PierreTreats.Models;
+
+<h1>List of all treats for @ViewBag.UserName</h1>
+
+@if (@Model.Count == 0)
+{
+  <h3>No treats have been added yet!</h3>
+} 
+else
+{
+    @foreach(Treat treat in Model)
+  {
+    <li>@Html.ActionLink($"{treat.Name}", "Details", new { id = treat.TreatId }) | 
+      @foreach(TreatFlavor join in treat.JoinEntities)
+      {
+        @Html.ActionLink($"{join.Flavor.Name} ", "Details", "Flavors", new {id = join.Flavor.FlavorId} )
+      }
+    </li>
+  }
+}
+
+  <span>@Html.ActionLink("Add new treat", "Create")</span>
+  <span>@Html.ActionLink("Home", "Index", "Home")</span>
