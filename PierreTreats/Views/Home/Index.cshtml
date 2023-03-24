@@ -1,0 +1,32 @@
+@{
+  Layout = "_Layout";
+}
+
+@using PierreTreats.Models;
+
+
+  <h1 class="main-title">Pierre's Sweet and Savory Treats</h1>
+
+  @if (User.Identity.IsAuthenticated)
+  {
+    <h2>Treats for @ViewBag.UserName!</h2>
+    @if (Model.Count == 0)
+    {
+      <h3>No treats have been added yet!</h3>
+    } 
+      @foreach (Treat treat in Model)
+      {
+        <h3 class="recipe-list">@Html.ActionLink(@treat.Name, "Details", "Treats", new { id = @treat.TreatId})</h3>
+      }
+  }
+  else
+  {
+    <h3>Treats</h3>
+    <p>Please @Html.ActionLink("log in", "LogIn", "Account") to view or manage your account.</p>
+  }
+
+
+    <span>@Html.ActionLink("Manage treats", "Index", "Treats")</span> 
+    <span>@Html.ActionLink("Manage flavors", "Index", "Flavors")</span>
+    <span>@Html.ActionLink("Create or manage an account", "Index", "Account")</span>
+
