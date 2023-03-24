@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using PierreTreats.Models;
 using Microsoft.AspNetCore.Identity;
+using PierreTreats.Models;
 using System.Threading.Tasks;
-using System.Security.Claims;
 using PierreTreats.ViewModels;
 
 namespace PierreTreats.Controllers
@@ -13,21 +12,15 @@ namespace PierreTreats.Controllers
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
 
-    public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, PierreTreatsContext db)
+    public AccountController (UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, PierreTreatsContext db)
     {
       _userManager = userManager;
       _signInManager = signInManager;
       _db = db;
     }
 
-    public async Task<ActionResult> Index()
+    public ActionResult Index()
     {
-      string userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-      ApplicationUser currentUser = await _userManager.FindByIdAsync(userId);
-      if (currentUser != null)
-      {
-        ViewBag.UserName = currentUser.UserName;
-      }
       return View();
     }
 
@@ -37,7 +30,7 @@ namespace PierreTreats.Controllers
     }
 
     [HttpPost]
-    public async Task<ActionResult> Register(RegisterViewModel model)
+    public async Task<ActionResult> Register (RegisterViewModel model)
     {
       if (!ModelState.IsValid)
       {
@@ -45,7 +38,7 @@ namespace PierreTreats.Controllers
       }
       else
       {
-        ApplicationUser user = new ApplicationUser { Email = model.Email, UserName = model.UserName };
+        ApplicationUser user = new ApplicationUser { UserName = model.Email };
         IdentityResult result = await _userManager.CreateAsync(user, model.Password);
         if (result.Succeeded)
         {
@@ -62,7 +55,7 @@ namespace PierreTreats.Controllers
       }
     }
 
-    public ActionResult Login()
+        public ActionResult Login()
     {
       return View();
     }
@@ -93,7 +86,7 @@ namespace PierreTreats.Controllers
     public async Task<ActionResult> LogOff()
     {
       await _signInManager.SignOutAsync();
-      return RedirectToAction("Index", "Home");
+      return RedirectToAction("Index");
     }
   }
 }
