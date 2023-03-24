@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using PierreTreats.Models;
 using System.Threading.Tasks;
 using PierreTreats.ViewModels;
+using System.Security.Claims;
 
 namespace PierreTreats.Controllers
 {
@@ -19,8 +20,14 @@ namespace PierreTreats.Controllers
       _db = db;
     }
 
-    public ActionResult Index()
+    public async Task<ActionResult> Index()
     {
+      string userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      ApplicationUser currentUser = await _userManager.FindByIdAsync(userId);
+      if (currentUser != null)
+      {
+        ViewBag.UserName = currentUser.UserName;
+      }
       return View();
     }
 
@@ -38,7 +45,7 @@ namespace PierreTreats.Controllers
       }
       else
       {
-        ApplicationUser user = new ApplicationUser { UserName = model.Email };
+        ApplicationUser user = new ApplicationUser { Email = model.Email, UserName = model.UserName };
         IdentityResult result = await _userManager.CreateAsync(user, model.Password);
         if (result.Succeeded)
         {

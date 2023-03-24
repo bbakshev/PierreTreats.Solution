@@ -22,9 +22,10 @@ namespace PierreTreats.Controllers
       _db = db;
     }
 
+[Authorize]
     public async Task<ActionResult> Index()
     {
-      string userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       ApplicationUser currentUser = await _userManager.FindByIdAsync(userId);
       ViewBag.UserName = currentUser.UserName;
       List<Treat> userTreat = _db.Treats

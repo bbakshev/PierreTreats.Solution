@@ -9,11 +9,9 @@
   {
     <input type="submit" id="green-button" value="Log out" />
   }
-    <span>@Html.ActionLink(".Home", "Index", "Home")</span>
-    <span>@Html.ActionLink(".Edit Name", "Edit")</span>
 }
 else
 {
-    <span>@Html.ActionLink(".Register", "Register")</span>
-    <span>@Html.ActionLink(".Log in", "Login")</span>
+    <p>Not a member? <a href="/Account/Register">Register</a></p>
+    <p>Have an Account? <a href="/Account/Login">Log-In</a></p>
 }

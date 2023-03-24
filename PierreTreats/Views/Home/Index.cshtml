@@ -9,24 +9,18 @@
 
   @if (User.Identity.IsAuthenticated)
   {
-    <h2>Treats for @ViewBag.UserName!</h2>
+    <h3>Treats for @ViewBag.UserName!</h3>
     @if (Model.Count == 0)
     {
-      <h3>No treats have been added yet!</h3>
+      <h4>No treats have been added yet!</h4>
     } 
       @foreach (Treat treat in Model)
       {
-        <h3 class="recipe-list">@Html.ActionLink(@treat.Name, "Details", "Treats", new { id = @treat.TreatId})</h3>
+        <li class="recipe-list">@Html.ActionLink(@treat.Name, "Details", "Treats", new { id = @treat.TreatId})</li>
       }
   }
   else
   {
-    <h3>Treats</h3>
     <p>Please @Html.ActionLink("log in", "LogIn", "Account") to view or manage your account.</p>
   }
-
-
-    <span>@Html.ActionLink("Manage treats", "Index", "Treats")</span> 
-    <span>@Html.ActionLink("Manage flavors", "Index", "Flavors")</span>
-    <span>@Html.ActionLink("Create or manage an account", "Index", "Account")</span>
 
