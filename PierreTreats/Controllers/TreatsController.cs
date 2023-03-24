@@ -22,12 +22,41 @@ namespace PierreTreats.Controllers
       _db = db;
     }
 
-    public ActionResult Index()
+    public async Task<ActionResult> Index()
     {
-      List<Treat> model = _db.Treats.ToList();
-      return View(model);
+      string userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      ApplicationUser currentUser = await _userManager.FindByIdAsync(userId);
+      ViewBag.UserName = currentUser.UserName;
+      List<Treat> userTreat = _db.Treats
+                          .Where(entry => entry.User.Id == currentUser.Id)
+                          .Include(treat => treat.JoinEntities)
+                          .ThenInclude(join => join.Flavor)
+                          .ToList();
+      return View(userTreat);
     }
-
+    [Authorize]
+    public ActionResult Create()
+    {
+      return View();
+    }
+    [HttpPost]
+    public async Task<ActionResult> Create(Treat treat, int rating)
+    {
+      if (!ModelState.IsValid)
+      {
+        return View(treat);
+      }
+      else
+      {
+        string userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        ApplicationUser currentUser = await _userManager.FindByIdAsync(userId);
+        treat.User = currentUser;
+        treat.Rating = rating;
+        _db.Treats.Add(treat);
+        _db.SaveChanges();
+        return RedirectToAction("Index");
+      }
+    }
     public ActionResult Details(int id)
     {
       Treat thisTreat = _db.Treats
@@ -38,18 +67,16 @@ namespace PierreTreats.Controllers
     }
 
     [Authorize]
-    public ActionResult Create()
+    public ActionResult Edit(int id)
     {
-      return View();
+      Treat thisTreat = _db.Treats.FirstOrDefault(treats => treats.TreatId == id);
+      return View(thisTreat);
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create(Treat treat)
+    public ActionResult Edit(Treat treat)
     {
-      var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-      var currentUser = await _userManager.FindByIdAsync(userId);
-      treat.User = currentUser;
-      _db.Treats.Add(treat);
+      _db.Treats.Update(treat);
       _db.SaveChanges();
       return RedirectToAction("Index");
     }
@@ -65,33 +92,24 @@ namespace PierreTreats.Controllers
     [HttpPost]
     public ActionResult AddFlavor(Treat treat, int FlavorId)
     {
-      if (FlavorId != 0)
+      #nullable enable
+      TreatFlavor? joinEntity = _db.TreatFlavors.FirstOrDefault(join => (join.FlavorId == FlavorId && join.TreatId == treat.TreatId));
+      #nullable disable
+      if (joinEntity == null && FlavorId != 0)
       {
-        _db.FlavorTreat.Add(new FlavorTreat() { FlavorId = FlavorId, TreatId = treat.TreatId });
+        _db.TreatFlavors.Add(new TreatFlavor() { FlavorId = FlavorId, TreatId = treat.TreatId });
+        _db.SaveChanges();
       }
-      _db.SaveChanges();
-      return RedirectToAction("Index");
-    }
-
+      return RedirectToAction("Details", new { id = treat.TreatId });
+    }   
     [Authorize]
-    public ActionResult Edit(int id)
-    {
-      var thisTreat = _db.Treats.FirstOrDefault(treats => treats.TreatId == id);
-      return View(thisTreat);
-    }
-
     [HttpPost]
-    public ActionResult Edit(Treat treat)
+    public ActionResult DeleteJoin(int joinId)
     {
-      _db.Entry(treat).State = EntityState.Modified;
+      TreatFlavor joinEntry = _db.TreatFlavors.FirstOrDefault(entry => entry.TreatFlavorId == joinId);
+      _db.TreatFlavors.Remove(joinEntry);
       _db.SaveChanges();
       return RedirectToAction("Index");
-    }
-
-    [Authorize]
-    public ActionResult Delete(int id)
-    {
-      var thisTreat = _db.Treats.FirstOrDefault(treats =>
-    }
+    } 
   }
 }
