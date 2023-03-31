@@ -52,6 +52,12 @@ A website for keeping track of a treats. Users can add, edit, and delete treats/
 5. Run `dotnet watch run` in the command line to start the project in development mode with a watcher.
 6. Open the browser to _https://localhost:5001_. If you cannot access localhost:5001 it is likely because you have not configured a .NET developer security certificate for HTTPS. To learn about this, review this lesson: [Redirecting to HTTPS and Issuing a Security Certificate](https://www.learnhowtoprogram.com/c-and-net/basic-web-applications/redirecting-to-https-and-issuing-a-security-certificate).
 
+#### Logging In:
+1. To log in, navigate to the login page at _https://localhost:5001/Account/Login_.
+2. Enter the following credentials:
+  * Username: `test@test.com`
+  * Password: `test`
+
 ## Known Bugs
 
 No known bugs. Tests are not configured for the current format of this project.
